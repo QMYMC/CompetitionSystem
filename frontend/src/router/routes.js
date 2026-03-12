@@ -2,9 +2,12 @@ import {
   Bell,
   DataAnalysis,
   Document,
+  DocumentChecked,
   HomeFilled,
   Key,
+  Reading,
   User,
+  UserFilled,
   WarningFilled,
 } from '@element-plus/icons-vue'
 import CompetitionManagementView from '@/views/CompetitionManagementView.vue'
@@ -12,6 +15,9 @@ import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
 import ModulePlaceholderView from '@/views/ModulePlaceholderView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
+import RegistrationReviewView from '@/views/RegistrationReviewView.vue'
+import StudentRegistrationView from '@/views/StudentRegistrationView.vue'
+import StudentTeamView from '@/views/StudentTeamView.vue'
 import UnauthorizedView from '@/views/UnauthorizedView.vue'
 import UserManagementView from '@/views/UserManagementView.vue'
 
@@ -26,7 +32,7 @@ export const layoutChildrenRoutes = [
       menu: true,
       icon: HomeFilled,
       roles: ['ADMIN', 'TEACHER', 'STUDENT', 'COLLEGE_AUDITOR'],
-      description: '系统概览与当前登录状态展示。',
+      description: '展示当前登录身份、角色范围和系统演示入口。',
     },
   },
   {
@@ -39,7 +45,7 @@ export const layoutChildrenRoutes = [
       menu: true,
       icon: User,
       roles: ['ADMIN'],
-      description: '管理系统用户、角色归属和基础信息。',
+      description: '维护系统用户、角色归属和基础资料。',
     },
   },
   {
@@ -52,7 +58,46 @@ export const layoutChildrenRoutes = [
       menu: true,
       icon: Document,
       roles: ['ADMIN'],
-      description: '管理竞赛信息、报名时间、级别与状态。',
+      description: '维护竞赛分类、级别、报名时间和赛制。',
+    },
+  },
+  {
+    path: 'reviews',
+    name: 'reviews',
+    component: RegistrationReviewView,
+    meta: {
+      title: '院级审核',
+      requiresAuth: true,
+      menu: true,
+      icon: DocumentChecked,
+      roles: ['ADMIN', 'COLLEGE_AUDITOR'],
+      description: '查看学生报名，填写审核意见，并执行通过或驳回。',
+    },
+  },
+  {
+    path: 'student/registrations',
+    name: 'student-registrations',
+    component: StudentRegistrationView,
+    meta: {
+      title: '学生报名',
+      requiresAuth: true,
+      menu: true,
+      icon: Reading,
+      roles: ['STUDENT'],
+      description: '学生查看开放竞赛，完成个人赛报名并跟踪审核状态。',
+    },
+  },
+  {
+    path: 'student/teams',
+    name: 'student-teams',
+    component: StudentTeamView,
+    meta: {
+      title: '团队管理',
+      requiresAuth: true,
+      menu: true,
+      icon: UserFilled,
+      roles: ['STUDENT'],
+      description: '创建团队、维护成员与指导教师，并提交院级审核。',
     },
   },
   {
@@ -65,7 +110,7 @@ export const layoutChildrenRoutes = [
       menu: true,
       icon: Bell,
       roles: ['ADMIN', 'TEACHER', 'STUDENT', 'COLLEGE_AUDITOR'],
-      description: '阶段 6 将补充公告发布、列表与详情页面。',
+      description: '公告发布与通知展示将在后续阶段补充。',
     },
   },
   {
@@ -78,7 +123,7 @@ export const layoutChildrenRoutes = [
       menu: true,
       icon: DataAnalysis,
       roles: ['ADMIN', 'COLLEGE_AUDITOR'],
-      description: '阶段 6 将补充图表展示与管理统计能力。',
+      description: '统计图表与数据分析将在后续阶段补充。',
     },
   },
   {
@@ -91,7 +136,7 @@ export const layoutChildrenRoutes = [
       menu: true,
       icon: Key,
       roles: ['ADMIN', 'TEACHER', 'STUDENT', 'COLLEGE_AUDITOR'],
-      description: '当前页面用于展示登录用户资料与身份信息。',
+      description: '展示当前登录用户的基本资料和角色身份。',
     },
   },
 ]

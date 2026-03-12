@@ -48,7 +48,7 @@ async function handleCommand(command) {
       >
         <el-menu-item
           v-for="menu in menus"
-          :key="menu.path"
+          :key="menu.name"
           :index="`/${menu.path}`"
         >
           <el-icon><component :is="menu.meta.icon" /></el-icon>
@@ -62,7 +62,9 @@ async function handleCommand(command) {
         <div>
           <p class="page-kicker">{{ roleSummary }}</p>
           <h1>{{ route.meta.title || '系统首页' }}</h1>
-          <p class="page-description">{{ route.meta.description || '高校学科竞赛信息管理系统后台工作区。' }}</p>
+          <p class="page-description">
+            {{ route.meta.description || '高校学科竞赛信息管理系统后台工作区。' }}
+          </p>
         </div>
 
         <el-dropdown @command="handleCommand">

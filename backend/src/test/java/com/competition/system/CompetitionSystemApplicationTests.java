@@ -36,7 +36,7 @@ class CompetitionSystemApplicationTests {
 
     @Test
     void loginShouldReturnTokenAndInfo() throws Exception {
-        String token = loginAsAdmin();
+        String token = login("admin", "Admin@123");
 
         mockMvc.perform(get("/auth/info")
                         .header("Authorization", "Bearer " + token))
@@ -48,7 +48,7 @@ class CompetitionSystemApplicationTests {
 
     @Test
     void userCrudShouldWork() throws Exception {
-        String token = loginAsAdmin();
+        String token = login("admin", "Admin@123");
 
         mockMvc.perform(get("/users")
                         .header("Authorization", "Bearer " + token)
@@ -56,7 +56,7 @@ class CompetitionSystemApplicationTests {
                         .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
-                .andExpect(jsonPath("$.data.total").value(4))
+                .andExpect(jsonPath("$.data.total").value(5))
                 .andExpect(jsonPath("$.data.records").isArray());
 
         String createResponse = mockMvc.perform(post("/users")
@@ -64,16 +64,16 @@ class CompetitionSystemApplicationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                  "username": "stage4_user",
-                                  "password": "Stage4@123",
-                                  "realName": "阶段四测试用户",
+                                  "username": "stage5_user",
+                                  "password": "Stage5@123",
+                                  "realName": "阶段五测试用户",
                                   "roleId": 3,
                                   "collegeId": 1,
                                   "status": 1,
                                   "phone": "13800009999",
-                                  "email": "stage4_user@test.local",
+                                  "email": "stage5_user@test.local",
                                   "gender": "M",
-                                  "remark": "stage4 test user"
+                                  "remark": "stage5 test user"
                                 }
                                 """))
                 .andExpect(status().isOk())
@@ -89,12 +89,12 @@ class CompetitionSystemApplicationTests {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                  "realName": "阶段四测试用户已更新",
+                                  "realName": "阶段五测试用户已更新",
                                   "roleId": 2,
                                   "collegeId": 2,
                                   "status": 1,
                                   "phone": "13800008888",
-                                  "email": "stage4_user_updated@test.local",
+                                  "email": "stage5_user_updated@test.local",
                                   "gender": "F",
                                   "remark": "updated"
                                 }
@@ -105,7 +105,7 @@ class CompetitionSystemApplicationTests {
         mockMvc.perform(get("/users/{id}", userId)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.realName").value("阶段四测试用户已更新"));
+                .andExpect(jsonPath("$.data.realName").value("阶段五测试用户已更新"));
 
         mockMvc.perform(delete("/users/{id}", userId)
                         .header("Authorization", "Bearer " + token))
@@ -115,7 +115,7 @@ class CompetitionSystemApplicationTests {
 
     @Test
     void competitionCrudShouldWork() throws Exception {
-        String token = loginAsAdmin();
+        String token = login("admin", "Admin@123");
 
         mockMvc.perform(get("/competitions")
                         .header("Authorization", "Bearer " + token)
@@ -132,7 +132,7 @@ class CompetitionSystemApplicationTests {
                         .content("""
                                 {
                                   "categoryId": 1,
-                                  "title": "阶段四测试竞赛",
+                                  "title": "阶段五测试竞赛",
                                   "levelName": "校级",
                                   "organizer": "计算机学院",
                                   "registrationStart": "2026-06-01 09:00:00",
@@ -141,7 +141,7 @@ class CompetitionSystemApplicationTests {
                                   "competitionEnd": "2026-06-20 18:00:00",
                                   "teamMode": "TEAM",
                                   "maxTeamSize": 3,
-                                  "description": "stage4 test competition",
+                                  "description": "stage5 test competition",
                                   "status": "DRAFT"
                                 }
                                 """))
@@ -159,7 +159,7 @@ class CompetitionSystemApplicationTests {
                         .content("""
                                 {
                                   "categoryId": 2,
-                                  "title": "阶段四测试竞赛已更新",
+                                  "title": "阶段五测试竞赛已更新",
                                   "levelName": "省级",
                                   "organizer": "电子信息学院",
                                   "registrationStart": "2026-06-02 09:00:00",
@@ -178,7 +178,7 @@ class CompetitionSystemApplicationTests {
         mockMvc.perform(get("/competitions/{id}", competitionId)
                         .header("Authorization", "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.title").value("阶段四测试竞赛已更新"));
+                .andExpect(jsonPath("$.data.title").value("阶段五测试竞赛已更新"));
 
         mockMvc.perform(delete("/competitions/{id}", competitionId)
                         .header("Authorization", "Bearer " + token))
@@ -186,19 +186,143 @@ class CompetitionSystemApplicationTests {
                 .andExpect(jsonPath("$.code").value(200));
     }
 
-    private String loginAsAdmin() throws Exception {
-        String response = mockMvc.perform(post("/auth/login")
+    @Test
+    void studentWorkflowAndCollegeReviewShouldWork() throws Exception {
+        String studentToken = login("student01", "Student@123");
+        String adminToken = login("admin", "Admin@123");
+
+        String competitionResponse = mockMvc.perform(get("/student/workflow/competitions")
+                        .header("Authorization", "Bearer " + studentToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JsonNode competitionNodes = objectMapper.readTree(competitionResponse).path("data");
+        boolean hasTeamCompetition = false;
+        boolean hasIndividualCompetition = false;
+        for (JsonNode competitionNode : competitionNodes) {
+            String teamMode = competitionNode.path("teamMode").asText();
+            hasTeamCompetition = hasTeamCompetition || "TEAM".equals(teamMode);
+            hasIndividualCompetition = hasIndividualCompetition || "INDIVIDUAL".equals(teamMode);
+        }
+        org.junit.jupiter.api.Assertions.assertTrue(hasTeamCompetition);
+        org.junit.jupiter.api.Assertions.assertTrue(hasIndividualCompetition);
+
+        String individualResponse = mockMvc.perform(post("/student/workflow/registrations/individual")
+                        .header("Authorization", "Bearer " + studentToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                  "username": "admin",
-                                  "password": "Admin@123"
+                                  "competitionId": 2,
+                                  "remark": "个人赛报名测试"
                                 }
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(200))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        long individualRegistrationId = objectMapper.readTree(individualResponse).path("data").asLong();
+
+        String teamResponse = mockMvc.perform(post("/student/workflow/teams")
+                        .header("Authorization", "Bearer " + studentToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "competitionId": 1,
+                                  "teamName": "阶段五演示团队",
+                                  "teacherId": 1,
+                                  "memberUserIds": [5],
+                                  "remark": "团队赛报名测试"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        long teamId = objectMapper.readTree(teamResponse).path("data").asLong();
+
+        mockMvc.perform(post("/student/workflow/teams/{teamId}/submit", teamId)
+                        .header("Authorization", "Bearer " + studentToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "remark": "提交院级审核"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200));
+
+        String reviewPage = mockMvc.perform(get("/reviews/registrations")
+                        .header("Authorization", "Bearer " + adminToken)
+                        .param("current", "1")
+                        .param("size", "10")
+                        .param("auditStatus", "PENDING_COLLEGE_REVIEW"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        JsonNode reviewRecords = objectMapper.readTree(reviewPage).path("data").path("records");
+        long teamRegistrationId = 0L;
+        for (JsonNode record : reviewRecords) {
+            if (record.path("teamId").asLong() == teamId) {
+                teamRegistrationId = record.path("id").asLong();
+                break;
+            }
+        }
+
+        mockMvc.perform(post("/reviews/registrations/{id}/approve", individualRegistrationId)
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "opinion": "材料完整，同意通过"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200));
+
+        mockMvc.perform(post("/reviews/registrations/{id}/reject", teamRegistrationId)
+                        .header("Authorization", "Bearer " + adminToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "opinion": "团队说明需要补充后再提交"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200));
+
+        mockMvc.perform(get("/student/workflow/registrations")
+                        .header("Authorization", "Bearer " + studentToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
+                .andExpect(jsonPath("$.data[0].auditStatus").exists())
+                .andExpect(jsonPath("$.data[1].auditStatus").exists());
+
+        mockMvc.perform(get("/student/workflow/teams/{teamId}", teamId)
+                        .header("Authorization", "Bearer " + studentToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.teamStatus").value("COLLEGE_REJECTED"));
+    }
+
+    private String login(String username, String password) throws Exception {
+        String response = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "username": "%s",
+                                  "password": "%s"
+                                }
+                                """.formatted(username, password)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.data.token").isNotEmpty())
-                .andExpect(jsonPath("$.data.user.username").value("admin"))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();

@@ -23,6 +23,12 @@ const rules = {
   password: [{ required: true, message: '请输入密码。', trigger: 'blur' }],
 }
 
+const demoAccounts = [
+  '管理员：admin / Admin@123',
+  '学生：student01 / Student@123',
+  '团队成员：student02 / Student@123',
+]
+
 async function handleLogin() {
   const valid = await formRef.value.validate().catch(() => false)
   if (!valid) {
@@ -43,23 +49,35 @@ async function handleLogin() {
 <template>
   <div class="login-shell">
     <section class="login-copy">
-      <p class="hero-kicker">阶段 3</p>
+      <p class="hero-kicker">阶段 5</p>
       <h1>{{ appStore.systemName }}</h1>
       <p class="hero-text">
-        当前前端基础框架已经和阶段 2 的后端登录接口联通。可直接使用默认管理员账号完成登录，
-        进入后台管理首页。
+        当前已完成报名、团队和院级审核闭环。可使用管理员和学生账号分别演示学生报名、团队组建、
+        院级审核通过/驳回等核心流程。
       </p>
 
       <div class="login-tips">
         <div class="login-tip-card">
-          <span>后端登录接口</span>
+          <span>登录接口</span>
           <strong>POST /api/auth/login</strong>
         </div>
         <div class="login-tip-card">
-          <span>默认管理员账号</span>
-          <strong>admin / Admin@123</strong>
+          <span>演示账号</span>
+          <strong>{{ demoAccounts[0] }}</strong>
         </div>
       </div>
+
+      <el-card class="panel-card" shadow="never">
+        <div class="section-header">
+          <h3>推荐演示账号</h3>
+          <p>管理员负责院级审核，学生负责个人赛/团队赛报名演示。</p>
+        </div>
+        <div class="module-grid">
+          <div v-for="item in demoAccounts" :key="item" class="module-item">
+            {{ item }}
+          </div>
+        </div>
+      </el-card>
     </section>
 
     <el-card class="login-card" shadow="hover">
@@ -67,9 +85,9 @@ async function handleLogin() {
         <div class="auth-card-header">
           <div>
             <h2>系统登录</h2>
-            <p>登录后进入高校学科竞赛信息管理系统后台。</p>
+            <p>登录后进入后台首页，根据当前角色展示相应菜单和功能。</p>
           </div>
-          <el-tag type="success">接口已联通</el-tag>
+          <el-tag type="success">前后端已联调</el-tag>
         </div>
       </template>
 

@@ -8,29 +8,29 @@ const cards = computed(() => [
   {
     label: '当前登录账号',
     value: userStore.profile?.username || '--',
-    tip: '通过阶段 2 的登录接口完成身份认证。',
+    tip: '认证信息来自阶段 2 的登录接口。',
   },
   {
     label: '当前角色',
     value: userStore.roles.join(', ') || '--',
-    tip: '左侧菜单会根据路由权限进行动态过滤。',
+    tip: '左侧菜单会根据角色动态过滤。',
   },
   {
     label: '受保护路由',
     value: '已启用',
-    tip: '未登录访问受保护页面时会自动跳转到登录页。',
+    tip: '未登录访问后台页面会自动跳转到登录页。',
   },
   {
-    label: '后端联调状态',
-    value: '已连接',
-    tip: 'Axios 请求封装与 Token 拦截器已生效。',
+    label: '阶段 5 进度',
+    value: '已完成',
+    tip: '学生报名、团队管理和院级审核已可演示。',
   },
 ])
 
 const nextSteps = [
-  '阶段 4 将实现用户管理相关业务功能。',
-  '阶段 5 将补充报名、组队与审核流程。',
-  '阶段 6 将补充获奖、公告与统计图表。',
+  '学生可演示个人赛报名、团队创建、成员维护和提交审核。',
+  '管理员可演示院级审核、审核意见填写以及通过/驳回。',
+  '系统状态流转已覆盖组队中、待院级审核、院级通过、院级驳回。',
 ]
 </script>
 
@@ -41,8 +41,8 @@ const nextSteps = [
         <p class="hero-kicker">后台首页</p>
         <h2>系统首页</h2>
         <p class="hero-text">
-          当前已进入受保护的后台工作区。此页面用于确认登录闭环、路由守卫、Pinia 用户状态、
-          Axios 请求封装以及后端认证联调均已正常工作。
+          当前系统已经具备毕业设计展示所需的基础闭环：登录认证、角色菜单、用户管理、竞赛管理、
+          学生报名、团队组建和院级审核。
         </p>
       </div>
 
@@ -63,7 +63,7 @@ const nextSteps = [
     <section class="module-panel">
       <div class="section-header">
         <h3>当前登录信息</h3>
-        <p>用户资料来自 `GET /api/auth/info` 接口，并在 Token 校验通过后加载。</p>
+        <p>以下数据来自 `GET /api/auth/info`，用于驱动路由守卫与角色菜单。</p>
       </div>
 
       <div class="profile-grid">
@@ -88,8 +88,8 @@ const nextSteps = [
 
     <section class="module-panel">
       <div class="section-header">
-        <h3>后续阶段预告</h3>
-        <p>当前只实现了阶段 3 的前端基础框架，业务模块仍保留占位状态。</p>
+        <h3>阶段 5 可演示流程</h3>
+        <p>建议先用学生账号完成报名，再切换管理员进行院级审核。</p>
       </div>
 
       <div class="module-grid">

@@ -14,13 +14,15 @@ INSERT INTO sys_user (id, username, password, real_name, email, phone, gender, u
 (1, 'admin', '$2a$10$DqnDLKyd4kEsqj51OlI7yOu4ybQcFjlZdcK38tsyd9GMwgNprQsZO', 'System Admin', 'admin@competition.local', '13800000001', 'M', 'ADMIN', 1, 1, 'Default administrator account', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (2, 'teacher01', '$2a$10$ZLLX2whsjlFNMZgL4nOMOOGCW83/ZdgNQKQShv6zucj0vbd.oi4lW', 'Teacher Zhang', 'teacher01@competition.local', '13800000002', 'F', 'TEACHER', 1, 1, 'Default teacher account', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (3, 'student01', '$2a$10$oLMn9t2WSh4JPXoJK9dEWeBYnCTgSRC.9Ot21zFAtppFa5umHEYcG', 'Student Li', 'student01@competition.local', '13800000003', 'M', 'STUDENT', 1, 1, 'Default student account', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(4, 'auditor01', '$2a$10$.Q6LHhRJsUMeG0vmy54VZeIGXvtjJnfQcWQOyJJ5WpNDHKPrw6LOe', 'Auditor Wang', 'auditor01@competition.local', '13800000004', 'F', 'COLLEGE_AUDITOR', 1, 1, 'Default college auditor account', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
+(4, 'auditor01', '$2a$10$.Q6LHhRJsUMeG0vmy54VZeIGXvtjJnfQcWQOyJJ5WpNDHKPrw6LOe', 'Auditor Wang', 'auditor01@competition.local', '13800000004', 'F', 'COLLEGE_AUDITOR', 1, 1, 'Default college auditor account', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(5, 'student02', '$2a$10$oLMn9t2WSh4JPXoJK9dEWeBYnCTgSRC.9Ot21zFAtppFa5umHEYcG', 'Student Zhao', 'student02@competition.local', '13800000005', 'F', 'STUDENT', 1, 1, 'Stage 5 team member demo account', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
 
 INSERT INTO sys_user_role (id, user_id, role_id, create_time, update_time, deleted) VALUES
 (1, 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (2, 2, 2, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (3, 3, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
-(4, 4, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
+(4, 4, 4, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(5, 5, 3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
 
 INSERT INTO teacher_info (id, user_id, teacher_no, title_name, department, research_direction, phone, create_time, update_time, deleted) VALUES
 (1, 2, 'T2026001', 'Associate Professor', 'Software Engineering Department', 'Competition Guidance', '13800000002', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
@@ -43,7 +45,7 @@ INSERT INTO competition (
 (2, 2, 'University Electronic Design Challenge', 'Provincial', 'Engineering Association',
  '2026-04-05 09:00:00', '2026-04-18 18:00:00',
  '2026-04-28 09:00:00', '2026-04-30 18:00:00',
- 'TEAM', 4, 'Electronic design competition demo data for phase 4.', 'DRAFT',
+ 'INDIVIDUAL', 1, 'Electronic design competition demo data for phase 5 individual registration demo.', 'PUBLISHED',
  CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
 
 INSERT INTO notice (id, title, content, publish_status, publisher_id, publish_time, top_flag, create_time, update_time, deleted) VALUES
