@@ -1,63 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-import DashboardView from '@/views/DashboardView.vue'
-import LoginView from '@/views/LoginView.vue'
-import ModulePlaceholderView from '@/views/ModulePlaceholderView.vue'
-import NotFoundView from '@/views/NotFoundView.vue'
+import pinia from '@/stores'
+import { useAppStore } from '@/stores/app'
+import { useUserStore } from '@/stores/user'
+import { baseRoutes, hasPermission, layoutChildrenRoutes } from '@/router/routes'
 
 const routes = [
-  {
-    path: '/login',
-    name: 'login',
-    component: LoginView,
-    meta: {
-      title: '登录',
-    },
-  },
   {
     path: '/',
     component: AdminLayout,
     redirect: '/dashboard',
-    children: [
-      {
-        path: 'dashboard',
-        name: 'dashboard',
-        component: DashboardView,
-        meta: {
-          title: '系统首页',
-        },
-      },
-      {
-        path: 'users',
-        name: 'users',
-        component: ModulePlaceholderView,
-        meta: {
-          title: '用户管理',
-        },
-      },
-      {
-        path: 'notices',
-        name: 'notices',
-        component: ModulePlaceholderView,
-        meta: {
-          title: '公告通知',
-        },
-      },
-      {
-        path: 'stats',
-        name: 'stats',
-        component: ModulePlaceholderView,
-        meta: {
-          title: '统计分析',
-        },
-      },
-    ],
+    meta: {
+      requiresAuth: true,
+    },
+    children: layoutChildrenRoutes,
   },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'not-found',
-    component: NotFoundView,
-  },
+  ...baseRoutes,
 ]
 
 const router = createRouter({
@@ -66,9 +24,45 @@ const router = createRouter({
   scrollBehavior: () => ({ top: 0 }),
 })
 
+router.beforeEach(async (to) => {
+  const userStore = useUserStore(pinia)
+
+  if (!userStore.initialized) {
+    try {
+      await userStore.bootstrap()
+    } catch {
+      return {
+        path: '/login',
+        query: to.path !== '/login' ? { redirect: to.fullPath } : {},
+      }
+    }
+  }
+
+  const requiresAuth = to.matched.some((record) => record.meta?.requiresAuth)
+
+  if (to.meta?.guestOnly && userStore.isAuthenticated) {
+    return to.query.redirect || '/dashboard'
+  }
+
+  if (requiresAuth && !userStore.hasToken) {
+    return {
+      path: '/login',
+      query: { redirect: to.fullPath },
+    }
+  }
+
+  if (requiresAuth && !hasPermission(to, userStore.roles)) {
+    return '/403'
+  }
+
+  return true
+})
+
 router.afterEach((to) => {
-  const appTitle = import.meta.env.VITE_APP_TITLE || '高校学科竞赛信息管理系统'
-  document.title = to.meta?.title ? `${to.meta.title} - ${appTitle}` : appTitle
+  const appStore = useAppStore(pinia)
+  document.title = to.meta?.title
+    ? `${to.meta.title} | ${appStore.systemName}`
+    : appStore.systemName
 })
 
 export default router

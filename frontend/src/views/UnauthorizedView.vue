@@ -1,9 +1,9 @@
 <template>
   <div class="empty-page">
     <el-result
-      icon="warning"
-      title="Page not found"
-      sub-title="The requested route does not exist in the current phase."
+      icon="error"
+      title="No access"
+      sub-title="Your current role does not have permission to visit this page."
     >
       <template #extra>
         <el-button type="primary" @click="$router.push('/dashboard')">Back to dashboard</el-button>

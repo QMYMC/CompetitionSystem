@@ -1,26 +1,43 @@
 <script setup>
 import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import { Bell, DataAnalysis, HomeFilled, User } from '@element-plus/icons-vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ArrowDown } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { filterMenus, layoutChildrenRoutes } from '@/router/routes'
 import { useAppStore } from '@/stores/app'
+import { useUserStore } from '@/stores/user'
 
 const route = useRoute()
+const router = useRouter()
 const appStore = useAppStore()
+const userStore = useUserStore()
 
 const activeMenu = computed(() => route.path)
+const menus = computed(() => filterMenus(layoutChildrenRoutes, userStore.roles))
+const roleSummary = computed(() => userStore.roles.join(' / ') || 'No Role')
 
-const menus = [
-  { index: '/dashboard', title: '系统首页', icon: HomeFilled },
-  { index: '/users', title: '用户管理', icon: User },
-  { index: '/notices', title: '公告通知', icon: Bell },
-  { index: '/stats', title: '统计分析', icon: DataAnalysis },
-]
+async function handleCommand(command) {
+  if (command === 'profile') {
+    await router.push('/profile')
+    return
+  }
+
+  if (command === 'logout') {
+    await userStore.logout()
+    ElMessage.success('Logged out.')
+    await router.push('/login')
+  }
+}
 </script>
 
 <template>
   <el-container class="admin-layout">
-    <el-aside width="240px" class="sidebar">
-      <div class="brand">{{ appStore.systemName }}</div>
+    <el-aside width="248px" class="sidebar">
+      <div class="brand-panel">
+        <p class="brand-kicker">Competition Admin</p>
+        <div class="brand">{{ appStore.systemName }}</div>
+      </div>
+
       <el-menu
         :default-active="activeMenu"
         class="menu"
@@ -31,11 +48,11 @@ const menus = [
       >
         <el-menu-item
           v-for="menu in menus"
-          :key="menu.index"
-          :index="menu.index"
+          :key="menu.path"
+          :index="`/${menu.path}`"
         >
-          <el-icon><component :is="menu.icon" /></el-icon>
-          <span>{{ menu.title }}</span>
+          <el-icon><component :is="menu.meta.icon" /></el-icon>
+          <span>{{ menu.meta.title }}</span>
         </el-menu-item>
       </el-menu>
     </el-aside>
@@ -43,10 +60,27 @@ const menus = [
     <el-container>
       <el-header class="header">
         <div>
-          <h1>管理端工作台</h1>
-          <p>阶段 1 仅初始化项目骨架，后续业务模块按任务书逐步补齐。</p>
+          <p class="page-kicker">{{ roleSummary }}</p>
+          <h1>{{ route.meta.title || 'Dashboard' }}</h1>
+          <p class="page-description">{{ route.meta.description || 'Competition management workspace.' }}</p>
         </div>
-        <el-button type="primary" plain @click="$router.push('/login')">查看登录页占位</el-button>
+
+        <el-dropdown @command="handleCommand">
+          <button type="button" class="user-card">
+            <div>
+              <strong>{{ userStore.displayName }}</strong>
+              <span>{{ userStore.profile?.username }}</span>
+            </div>
+            <el-icon><ArrowDown /></el-icon>
+          </button>
+
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item command="profile">Profile</el-dropdown-item>
+              <el-dropdown-item divided command="logout">Logout</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </el-header>
 
       <el-main class="content">
