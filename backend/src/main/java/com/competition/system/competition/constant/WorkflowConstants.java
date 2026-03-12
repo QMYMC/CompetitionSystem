@@ -25,4 +25,12 @@ public final class WorkflowConstants {
     public static final String AUDIT_RESULT_APPROVED = "APPROVED";
     public static final String AUDIT_RESULT_REJECTED = "REJECTED";
     public static final String AUDIT_BUSINESS_REGISTRATION = "REGISTRATION";
+    public static final String AUDIT_BUSINESS_AWARD = "AWARD";
+
+    public static final String AWARD_STATUS_PENDING = "PENDING_COLLEGE_REVIEW";
+    public static final String AWARD_STATUS_APPROVED = "COLLEGE_APPROVED";
+    public static final String AWARD_STATUS_REJECTED = "COLLEGE_REJECTED";
+
+    public static final String NOTICE_STATUS_DRAFT = "DRAFT";
+    public static final String NOTICE_STATUS_PUBLISHED = "PUBLISHED";
 }

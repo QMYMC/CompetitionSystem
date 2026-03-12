@@ -24,7 +24,7 @@ async function handleCommand(command) {
 
   if (command === 'logout') {
     await userStore.logout()
-    ElMessage.success('已退出登录。')
+    ElMessage.success('已退出登录')
     await router.push('/login')
   }
 }

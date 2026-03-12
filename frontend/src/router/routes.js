@@ -10,12 +10,16 @@ import {
   UserFilled,
   WarningFilled,
 } from '@element-plus/icons-vue'
+import AwardReviewView from '@/views/AwardReviewView.vue'
 import CompetitionManagementView from '@/views/CompetitionManagementView.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
 import ModulePlaceholderView from '@/views/ModulePlaceholderView.vue'
+import NoticeCenterView from '@/views/NoticeCenterView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import RegistrationReviewView from '@/views/RegistrationReviewView.vue'
+import StatisticsView from '@/views/StatisticsView.vue'
+import StudentAwardView from '@/views/StudentAwardView.vue'
 import StudentRegistrationView from '@/views/StudentRegistrationView.vue'
 import StudentTeamView from '@/views/StudentTeamView.vue'
 import UnauthorizedView from '@/views/UnauthorizedView.vue'
@@ -32,7 +36,7 @@ export const layoutChildrenRoutes = [
       menu: true,
       icon: HomeFilled,
       roles: ['ADMIN', 'TEACHER', 'STUDENT', 'COLLEGE_AUDITOR'],
-      description: '展示当前登录身份、角色范围和系统演示入口。',
+      description: '展示系统演示入口、账号身份和阶段 6 核心模块。',
     },
   },
   {
@@ -66,12 +70,25 @@ export const layoutChildrenRoutes = [
     name: 'reviews',
     component: RegistrationReviewView,
     meta: {
-      title: '院级审核',
+      title: '报名审核',
       requiresAuth: true,
       menu: true,
       icon: DocumentChecked,
       roles: ['ADMIN', 'COLLEGE_AUDITOR'],
-      description: '查看学生报名，填写审核意见，并执行通过或驳回。',
+      description: '查看报名记录，填写院级审核意见，并执行通过或驳回。',
+    },
+  },
+  {
+    path: 'awards/review',
+    name: 'award-review',
+    component: AwardReviewView,
+    meta: {
+      title: '获奖审核',
+      requiresAuth: true,
+      menu: true,
+      icon: DocumentChecked,
+      roles: ['ADMIN', 'COLLEGE_AUDITOR'],
+      description: '审核学生提交的获奖信息，并记录院级审核意见。',
     },
   },
   {
@@ -101,29 +118,42 @@ export const layoutChildrenRoutes = [
     },
   },
   {
+    path: 'student/awards',
+    name: 'student-awards',
+    component: StudentAwardView,
+    meta: {
+      title: '获奖填报',
+      requiresAuth: true,
+      menu: true,
+      icon: Document,
+      roles: ['STUDENT'],
+      description: '学生填报获奖信息，查看院级审核状态和审核意见。',
+    },
+  },
+  {
     path: 'notices',
     name: 'notices',
-    component: ModulePlaceholderView,
+    component: NoticeCenterView,
     meta: {
       title: '公告中心',
       requiresAuth: true,
       menu: true,
       icon: Bell,
       roles: ['ADMIN', 'TEACHER', 'STUDENT', 'COLLEGE_AUDITOR'],
-      description: '公告发布与通知展示将在后续阶段补充。',
+      description: '管理员可发布编辑公告，其他角色可查看已发布公告详情。',
     },
   },
   {
     path: 'stats',
     name: 'stats',
-    component: ModulePlaceholderView,
+    component: StatisticsView,
     meta: {
       title: '统计分析',
       requiresAuth: true,
       menu: true,
       icon: DataAnalysis,
       roles: ['ADMIN', 'COLLEGE_AUDITOR'],
-      description: '统计图表与数据分析将在后续阶段补充。',
+      description: '展示竞赛、报名、获奖和学院维度统计，并使用 ECharts 渲染图表。',
     },
   },
   {
@@ -136,7 +166,7 @@ export const layoutChildrenRoutes = [
       menu: true,
       icon: Key,
       roles: ['ADMIN', 'TEACHER', 'STUDENT', 'COLLEGE_AUDITOR'],
-      description: '展示当前登录用户的基本资料和角色身份。',
+      description: '展示当前登录用户的基础资料和角色身份。',
     },
   },
 ]
