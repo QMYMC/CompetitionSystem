@@ -30,4 +30,16 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
               AND c.deleted = 0
             """)
     String selectCollegeNameByCollegeId(@Param("collegeId") Long collegeId);
+
+    @Select("""
+            SELECT r.id AS roleId, r.role_code AS roleCode, r.role_name AS roleName
+            FROM sys_role r
+            INNER JOIN sys_user_role ur ON ur.role_id = r.id
+            WHERE ur.user_id = #{userId}
+              AND r.deleted = 0
+              AND ur.deleted = 0
+            ORDER BY r.sort ASC, r.id ASC
+            LIMIT 1
+            """)
+    com.competition.system.user.vo.UserRoleInfo selectRoleInfoByUserId(@Param("userId") Long userId);
 }

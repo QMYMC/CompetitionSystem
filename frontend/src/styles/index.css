@@ -136,7 +136,8 @@ a {
 .dashboard-page,
 .auth-page,
 .empty-page,
-.placeholder-page {
+.placeholder-page,
+.management-page {
   min-height: calc(100vh - 152px);
 }
 
@@ -213,6 +214,21 @@ a {
 .module-panel {
   margin-top: 22px;
   padding: 28px 30px;
+}
+
+.panel-card {
+  border-radius: var(--cs-radius-lg);
+  box-shadow: var(--cs-shadow-card);
+}
+
+.toolbar-form {
+  margin-bottom: 18px;
+}
+
+.pagination-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
 }
 
 .section-header h3 {

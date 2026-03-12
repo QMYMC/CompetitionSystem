@@ -19,8 +19,8 @@ const loginForm = reactive({
 })
 
 const rules = {
-  username: [{ required: true, message: 'Please enter username.', trigger: 'blur' }],
-  password: [{ required: true, message: 'Please enter password.', trigger: 'blur' }],
+  username: [{ required: true, message: '请输入用户名。', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入密码。', trigger: 'blur' }],
 }
 
 async function handleLogin() {
@@ -32,7 +32,7 @@ async function handleLogin() {
   loading.value = true
   try {
     await userStore.login(loginForm)
-    ElMessage.success('Login successful.')
+    ElMessage.success('登录成功。')
     await router.push(route.query.redirect || '/dashboard')
   } finally {
     loading.value = false
@@ -43,20 +43,20 @@ async function handleLogin() {
 <template>
   <div class="login-shell">
     <section class="login-copy">
-      <p class="hero-kicker">Phase 3</p>
+      <p class="hero-kicker">阶段 3</p>
       <h1>{{ appStore.systemName }}</h1>
       <p class="hero-text">
-        Frontend framework is now connected to the Stage 2 backend. Use the default admin
-        account to complete the login flow and enter the management console.
+        当前前端基础框架已经和阶段 2 的后端登录接口联通。可直接使用默认管理员账号完成登录，
+        进入后台管理首页。
       </p>
 
       <div class="login-tips">
         <div class="login-tip-card">
-          <span>Backend API</span>
-          <strong>`POST /api/auth/login`</strong>
+          <span>后端登录接口</span>
+          <strong>POST /api/auth/login</strong>
         </div>
         <div class="login-tip-card">
-          <span>Default Admin</span>
+          <span>默认管理员账号</span>
           <strong>admin / Admin@123</strong>
         </div>
       </div>
@@ -66,10 +66,10 @@ async function handleLogin() {
       <template #header>
         <div class="auth-card-header">
           <div>
-            <h2>System Login</h2>
-            <p>Sign in to continue to the admin console.</p>
+            <h2>系统登录</h2>
+            <p>登录后进入高校学科竞赛信息管理系统后台。</p>
           </div>
-          <el-tag type="success">API Connected</el-tag>
+          <el-tag type="success">接口已联通</el-tag>
         </div>
       </template>
 
@@ -80,21 +80,21 @@ async function handleLogin() {
         label-position="top"
         @keyup.enter="handleLogin"
       >
-        <el-form-item label="Username" prop="username">
-          <el-input v-model="loginForm.username" :prefix-icon="User" placeholder="admin" />
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="loginForm.username" :prefix-icon="User" placeholder="请输入用户名" />
         </el-form-item>
 
-        <el-form-item label="Password" prop="password">
+        <el-form-item label="密码" prop="password">
           <el-input
             v-model="loginForm.password"
             :prefix-icon="Lock"
             show-password
-            placeholder="Admin@123"
+            placeholder="请输入密码"
           />
         </el-form-item>
 
         <el-button type="primary" class="login-button" :loading="loading" @click="handleLogin">
-          Sign In
+          立即登录
         </el-button>
       </el-form>
     </el-card>

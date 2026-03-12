@@ -30,5 +30,21 @@ INSERT INTO comp_category (id, category_name, category_code, description, sort, 
 (2, 'Electronics', 'ELECTRONICS', 'Embedded and electronic design competitions', 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (3, 'Innovation', 'INNOVATION', 'Innovation and entrepreneurship competitions', 3, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
 
+INSERT INTO competition (
+    id, category_id, title, level_name, organizer, registration_start, registration_end,
+    competition_start, competition_end, team_mode, max_team_size, description, status,
+    create_time, update_time, deleted
+) VALUES
+(1, 1, 'National College Programming Contest', 'National', 'Ministry of Education',
+ '2026-04-01 09:00:00', '2026-04-20 18:00:00',
+ '2026-05-01 09:00:00', '2026-05-03 18:00:00',
+ 'TEAM', 3, 'Programming contest demo data for phase 4.', 'PUBLISHED',
+ CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
+(2, 2, 'University Electronic Design Challenge', 'Provincial', 'Engineering Association',
+ '2026-04-05 09:00:00', '2026-04-18 18:00:00',
+ '2026-04-28 09:00:00', '2026-04-30 18:00:00',
+ 'TEAM', 4, 'Electronic design competition demo data for phase 4.', 'DRAFT',
+ CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);
+
 INSERT INTO notice (id, title, content, publish_status, publisher_id, publish_time, top_flag, create_time, update_time, deleted) VALUES
 (1, 'Stage 2 Initialization Finished', 'Database schema, default users, and authentication foundation are ready for demo.', 'PUBLISHED', 1, CURRENT_TIMESTAMP, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0);

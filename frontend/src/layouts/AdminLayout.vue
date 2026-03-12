@@ -14,7 +14,7 @@ const userStore = useUserStore()
 
 const activeMenu = computed(() => route.path)
 const menus = computed(() => filterMenus(layoutChildrenRoutes, userStore.roles))
-const roleSummary = computed(() => userStore.roles.join(' / ') || 'No Role')
+const roleSummary = computed(() => userStore.roles.join(' / ') || '暂无角色')
 
 async function handleCommand(command) {
   if (command === 'profile') {
@@ -24,7 +24,7 @@ async function handleCommand(command) {
 
   if (command === 'logout') {
     await userStore.logout()
-    ElMessage.success('Logged out.')
+    ElMessage.success('已退出登录。')
     await router.push('/login')
   }
 }
@@ -34,7 +34,7 @@ async function handleCommand(command) {
   <el-container class="admin-layout">
     <el-aside width="248px" class="sidebar">
       <div class="brand-panel">
-        <p class="brand-kicker">Competition Admin</p>
+        <p class="brand-kicker">后台管理</p>
         <div class="brand">{{ appStore.systemName }}</div>
       </div>
 
@@ -61,8 +61,8 @@ async function handleCommand(command) {
       <el-header class="header">
         <div>
           <p class="page-kicker">{{ roleSummary }}</p>
-          <h1>{{ route.meta.title || 'Dashboard' }}</h1>
-          <p class="page-description">{{ route.meta.description || 'Competition management workspace.' }}</p>
+          <h1>{{ route.meta.title || '系统首页' }}</h1>
+          <p class="page-description">{{ route.meta.description || '高校学科竞赛信息管理系统后台工作区。' }}</p>
         </div>
 
         <el-dropdown @command="handleCommand">
@@ -76,8 +76,8 @@ async function handleCommand(command) {
 
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item command="profile">Profile</el-dropdown-item>
-              <el-dropdown-item divided command="logout">Logout</el-dropdown-item>
+              <el-dropdown-item command="profile">个人信息</el-dropdown-item>
+              <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
