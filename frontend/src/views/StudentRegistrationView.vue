@@ -83,7 +83,10 @@ function handleReset() {
 function openIndividualDialog(row) {
   selectedCompetition.value = row
   individualForm.competitionId = row.id
-  individualForm.remark = row.myAuditStatus === 'COLLEGE_REJECTED' ? '根据驳回意见已补充材料，申请重新提交。' : ''
+  individualForm.remark =
+    row.myAuditStatus === 'COLLEGE_REJECTED'
+      ? '已根据驳回意见补充说明，申请重新提交。'
+      : ''
   dialogVisible.value = true
 }
 
@@ -213,7 +216,7 @@ onMounted(fetchData)
             v-model="individualForm.remark"
             type="textarea"
             :rows="4"
-            placeholder="可填写补充说明，便于院级审核演示。"
+            placeholder="可填写补充说明，便于演示审核流程。"
           />
         </el-form-item>
       </el-form>

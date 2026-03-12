@@ -179,7 +179,7 @@ async function handleSubmit() {
 }
 
 async function handleDelete(row) {
-  await ElMessageBox.confirm(`确认删除用户「${row.username}」吗？`, '删除确认', {
+  await ElMessageBox.confirm(`确认删除用户“${row.username}”吗？`, '删除确认', {
     type: 'warning',
   })
   await deleteUserApi(row.id)
@@ -209,6 +209,11 @@ onMounted(async () => {
 <template>
   <div class="management-page">
     <el-card class="panel-card" shadow="hover">
+      <div class="section-header">
+        <h3>用户管理</h3>
+        <p>管理员可维护系统用户、角色归属、学院信息和启停状态。</p>
+      </div>
+
       <el-form :inline="true" :model="queryForm" class="toolbar-form">
         <el-form-item label="用户名">
           <el-input v-model="queryForm.username" clearable placeholder="请输入用户名" />

@@ -1,3 +1,7 @@
+-- init.sql
+-- 用途：初始化演示账号、竞赛、报名、审核、获奖、公告等默认数据
+-- 说明：该脚本应在 schema.sql 执行完成后再导入，适合毕业设计演示和联调测试
+
 INSERT INTO sys_college (id, college_code, college_name, sort, status, create_time, update_time, deleted) VALUES
 (1, 'CS', 'Computer College', 1, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),
 (2, 'EE', 'Electronic Information College', 2, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 0),

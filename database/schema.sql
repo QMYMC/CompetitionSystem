@@ -1,3 +1,7 @@
+-- schema.sql
+-- 用途：创建高校学科竞赛管理系统的全部核心表结构
+-- 说明：该脚本应先于 init.sql 执行，适用于默认 H2 演示模式和 MySQL 模式
+
 CREATE TABLE IF NOT EXISTS sys_college (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     college_code VARCHAR(50) NOT NULL,

@@ -89,7 +89,10 @@ function handleReset() {
 function openReviewDialog(row, mode) {
   currentRow.value = row
   reviewMode.value = mode
-  reviewForm.opinion = mode === 'approve' ? '材料完整，同意通过。' : '请根据院级审核意见补充后再次提交。'
+  reviewForm.opinion =
+    mode === 'approve'
+      ? '材料完整，同意通过。'
+      : '请根据院级审核意见补充后再次提交。'
   dialogVisible.value = true
 }
 
@@ -101,10 +104,10 @@ async function handleReview() {
   try {
     if (reviewMode.value === 'approve') {
       await approveRegistrationApi(currentRow.value.id, { opinion: reviewForm.opinion })
-      ElMessage.success('审核已通过。')
+      ElMessage.success('报名审核已通过。')
     } else {
       await rejectRegistrationApi(currentRow.value.id, { opinion: reviewForm.opinion })
-      ElMessage.success('审核已驳回。')
+      ElMessage.success('报名审核已驳回。')
     }
     dialogVisible.value = false
     await fetchPage()
@@ -120,7 +123,7 @@ onMounted(fetchPage)
   <div class="management-page workflow-page">
     <el-card class="panel-card" shadow="hover">
       <div class="section-header">
-        <h3>院级审核中心</h3>
+        <h3>院级报名审核</h3>
         <p>管理员和学院审核员可在此查看学生报名，填写审核意见，并完成通过或驳回。</p>
       </div>
 
@@ -156,7 +159,7 @@ onMounted(fetchPage)
         <el-table-column prop="registrationType" label="报名类型" width="100">
           <template #default="{ row }">{{ modeLabel(row.registrationType) }}</template>
         </el-table-column>
-        <el-table-column prop="applicantName" label="申请人/队长" min-width="120" />
+        <el-table-column prop="applicantName" label="申请人 / 队长" min-width="120" />
         <el-table-column prop="teamName" label="团队名称" min-width="160" />
         <el-table-column prop="teacherName" label="指导教师" min-width="120" />
         <el-table-column prop="memberSummary" label="成员名单" min-width="220" />

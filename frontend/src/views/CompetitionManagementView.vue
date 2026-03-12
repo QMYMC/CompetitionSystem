@@ -153,7 +153,7 @@ async function handleSubmit() {
 }
 
 async function handleDelete(row) {
-  await ElMessageBox.confirm(`确认删除竞赛「${row.title}」吗？`, '删除确认', {
+  await ElMessageBox.confirm(`确认删除竞赛“${row.title}”吗？`, '删除确认', {
     type: 'warning',
   })
   await deleteCompetitionApi(row.id)
@@ -189,6 +189,11 @@ onMounted(async () => {
 <template>
   <div class="management-page">
     <el-card class="panel-card" shadow="hover">
+      <div class="section-header">
+        <h3>竞赛管理</h3>
+        <p>管理员可维护竞赛分类、赛制、报名时间、比赛时间和发布状态。</p>
+      </div>
+
       <el-form :inline="true" :model="queryForm" class="toolbar-form">
         <el-form-item label="竞赛名称">
           <el-input v-model="queryForm.title" clearable placeholder="请输入竞赛名称" />
@@ -332,7 +337,7 @@ onMounted(async () => {
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="竞赛开始">
+            <el-form-item label="比赛开始">
               <el-date-picker
                 v-model="editForm.competitionStart"
                 type="datetime"
@@ -343,7 +348,7 @@ onMounted(async () => {
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="竞赛结束">
+            <el-form-item label="比赛结束">
               <el-date-picker
                 v-model="editForm.competitionEnd"
                 type="datetime"
