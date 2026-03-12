@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { getUserInfoApi, loginApi, logoutApi } from '@/api/auth'
 import { getToken, removeToken, setToken } from '@/utils/auth'
+import { formatDisplayText } from '@/utils/display'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -13,7 +14,7 @@ export const useUserStore = defineStore('user', {
   getters: {
     isAuthenticated: (state) => Boolean(state.token && state.profile),
     hasToken: (state) => Boolean(state.token),
-    displayName: (state) => state.profile?.realName || state.profile?.username || 'Guest',
+    displayName: (state) => formatDisplayText(state.profile?.realName) || state.profile?.username || '访客',
   },
 
   actions: {

@@ -1,36 +1,37 @@
 <script setup>
 import { computed } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { formatDisplayText, formatRoleList, formatUserTypeLabel } from '@/utils/display'
 
 const userStore = useUserStore()
 
 const cards = computed(() => [
   {
-    label: '当前登录账号',
+    label: '登录账号',
     value: userStore.profile?.username || '--',
-    tip: '认证信息来自阶段 2 的登录接口。',
+    tip: '当前账号信息用于识别登录身份和访问权限。',
   },
   {
     label: '当前角色',
-    value: userStore.roles.join(', ') || '--',
-    tip: '左侧菜单会根据角色动态过滤。',
+    value: formatRoleList(userStore.roles),
+    tip: '左侧菜单会根据当前角色自动展示可用功能。',
   },
   {
-    label: '受保护路由',
+    label: '访问控制',
     value: '已启用',
-    tip: '未登录访问后台页面时会自动跳转到登录页。',
+    tip: '未登录访问管理页面时将自动跳转至登录页。',
   },
   {
-    label: '阶段 6 进度',
-    value: '已完成',
-    tip: '获奖、公告和统计分析模块已可联调演示。',
+    label: '系统状态',
+    value: '运行正常',
+    tip: '报名、获奖、公告和统计分析等功能均已接入。',
   },
 ])
 
 const nextSteps = [
-  '学生可演示个人赛报名、团队创建、成员维护、获奖填报与查看审核结果。',
-  '管理员可演示报名审核、获奖审核、公告发布编辑删除，以及统计图表展示。',
-  '系统状态流转已覆盖报名和获奖的待审核、通过、驳回，适合毕业设计答辩展示。',
+  '学生可完成个人赛报名、团队组建、获奖信息填报，并查看审核结果。',
+  '管理人员可处理报名审核、获奖审核、公告发布和统计分析等业务。',
+  '系统已覆盖报名、获奖等业务的提交、审核与反馈流程。',
 ]
 </script>
 
@@ -38,11 +39,11 @@ const nextSteps = [
   <div class="dashboard-page">
     <section class="hero-panel">
       <div>
-        <p class="hero-kicker">后台首页</p>
+        <p class="hero-kicker">首页概览</p>
         <h2>系统首页</h2>
         <p class="hero-text">
-          当前系统已经具备毕业设计展示所需的完整基础闭环，包括登录认证、角色菜单、
-          用户管理、竞赛管理、学生报名、团队组建、院级审核、获奖填报、公告发布和统计分析。
+          当前系统已覆盖用户管理、竞赛管理、学生报名、团队管理、院级审核、
+          获奖填报、公告发布和统计分析等核心业务。
         </p>
       </div>
 
@@ -63,13 +64,13 @@ const nextSteps = [
     <section class="module-panel">
       <div class="section-header">
         <h3>当前登录信息</h3>
-        <p>以下数据来自 `GET /api/auth/info`，用于驱动路由守卫与角色菜单。</p>
+        <p>以下信息根据当前登录身份展示，用于控制菜单访问和页面权限。</p>
       </div>
 
       <div class="profile-grid">
         <div class="profile-item">
           <span>姓名</span>
-          <strong>{{ userStore.profile?.realName || '--' }}</strong>
+          <strong>{{ formatDisplayText(userStore.profile?.realName) || '--' }}</strong>
         </div>
         <div class="profile-item">
           <span>用户名</span>
@@ -77,19 +78,19 @@ const nextSteps = [
         </div>
         <div class="profile-item">
           <span>用户类型</span>
-          <strong>{{ userStore.profile?.userType || '--' }}</strong>
+          <strong>{{ formatUserTypeLabel(userStore.profile?.userType) }}</strong>
         </div>
         <div class="profile-item">
           <span>所属学院</span>
-          <strong>{{ userStore.profile?.collegeName || '--' }}</strong>
+          <strong>{{ formatDisplayText(userStore.profile?.collegeName) || '--' }}</strong>
         </div>
       </div>
     </section>
 
     <section class="module-panel">
       <div class="section-header">
-        <h3>阶段 6 可演示流程</h3>
-        <p>建议先用学生账号完成报名和获奖填报，再切换管理员演示审核、公告和统计页面。</p>
+        <h3>常用业务流程</h3>
+        <p>建议按学生填报、院级审核、结果查询的顺序核验系统业务流程。</p>
       </div>
 
       <div class="module-grid">

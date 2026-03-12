@@ -2,26 +2,27 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { formatDisplayText, formatRoleList } from '@/utils/display'
 
 const route = useRoute()
 const userStore = useUserStore()
 
-const title = computed(() => route.meta.title || '功能模块开发中')
-const description = computed(() => route.meta.description || '该模块将在后续阶段逐步实现。')
+const title = computed(() => route.meta.title || '功能信息')
+const description = computed(() => route.meta.description || '相关功能信息待补充。')
 </script>
 
 <template>
   <div class="placeholder-page">
     <el-card class="module-panel" shadow="hover">
       <div class="section-header">
-        <h3>功能模块开发中</h3>
+        <h3>{{ title }}</h3>
         <p>{{ description }}</p>
       </div>
 
       <div v-if="route.name === 'profile'" class="profile-grid">
         <div class="profile-item">
           <span>姓名</span>
-          <strong>{{ userStore.profile?.realName || '--' }}</strong>
+          <strong>{{ formatDisplayText(userStore.profile?.realName) || '--' }}</strong>
         </div>
         <div class="profile-item">
           <span>用户名</span>
@@ -29,17 +30,17 @@ const description = computed(() => route.meta.description || '该模块将在后
         </div>
         <div class="profile-item">
           <span>角色列表</span>
-          <strong>{{ userStore.roles.join(', ') || '--' }}</strong>
+          <strong>{{ formatRoleList(userStore.roles) }}</strong>
         </div>
         <div class="profile-item">
           <span>所属学院</span>
-          <strong>{{ userStore.profile?.collegeName || '--' }}</strong>
+          <strong>{{ formatDisplayText(userStore.profile?.collegeName) || '--' }}</strong>
         </div>
       </div>
 
       <el-empty
         v-else
-        :description="`${title} 模块正在开发中，将在后续阶段补充。`"
+        :description="`${title}相关信息暂未开放。`"
       />
     </el-card>
   </div>

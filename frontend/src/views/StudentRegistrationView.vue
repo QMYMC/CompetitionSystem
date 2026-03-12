@@ -7,6 +7,7 @@ import {
   getStudentCompetitionsApi,
   submitIndividualRegistrationApi,
 } from '@/api/workflow'
+import { formatDisplayText } from '@/utils/display'
 
 const router = useRouter()
 
@@ -117,7 +118,7 @@ onMounted(fetchData)
     <el-card class="panel-card" shadow="hover">
       <div class="section-header">
         <h3>开放竞赛列表</h3>
-        <p>学生可在此查看当前开放报名的个人赛和团队赛，并进入相应报名流程。</p>
+        <p>学生可在此查看当前开放报名的竞赛项目，并进入相应报名流程。</p>
       </div>
 
       <el-form :inline="true" :model="queryForm" class="toolbar-form">
@@ -141,15 +142,21 @@ onMounted(fetchData)
       </el-form>
 
       <el-table v-loading="loading" :data="competitions" border>
-        <el-table-column prop="title" label="竞赛名称" min-width="220" />
-        <el-table-column prop="categoryName" label="分类" min-width="120" />
-        <el-table-column prop="levelName" label="级别" min-width="100" />
+        <el-table-column label="竞赛名称" min-width="220">
+          <template #default="{ row }">{{ formatDisplayText(row.title) }}</template>
+        </el-table-column>
+        <el-table-column label="竞赛分类" min-width="120">
+          <template #default="{ row }">{{ formatDisplayText(row.categoryName) }}</template>
+        </el-table-column>
+        <el-table-column label="竞赛级别" min-width="100">
+          <template #default="{ row }">{{ formatDisplayText(row.levelName) }}</template>
+        </el-table-column>
         <el-table-column prop="teamMode" label="赛制" width="100">
           <template #default="{ row }">{{ modeLabel(row.teamMode) }}</template>
         </el-table-column>
         <el-table-column prop="registrationStart" label="报名开始" min-width="170" />
         <el-table-column prop="registrationEnd" label="报名结束" min-width="170" />
-        <el-table-column label="当前状态" width="140">
+        <el-table-column label="报名状态" width="140">
           <template #default="{ row }">
             <el-tag :type="statusType(row.myAuditStatus)">{{ statusLabel(row.myAuditStatus) }}</el-tag>
           </template>
@@ -184,19 +191,29 @@ onMounted(fetchData)
       </div>
 
       <el-table v-loading="loading" :data="registrations" border>
-        <el-table-column prop="competitionTitle" label="竞赛名称" min-width="220" />
+        <el-table-column label="竞赛名称" min-width="220">
+          <template #default="{ row }">{{ formatDisplayText(row.competitionTitle) }}</template>
+        </el-table-column>
         <el-table-column prop="registrationType" label="报名类型" width="100">
           <template #default="{ row }">{{ modeLabel(row.registrationType) }}</template>
         </el-table-column>
-        <el-table-column prop="teamName" label="团队名称" min-width="160" />
-        <el-table-column prop="teacherName" label="指导教师" min-width="120" />
-        <el-table-column prop="memberSummary" label="成员名单" min-width="220" />
+        <el-table-column label="团队名称" min-width="160">
+          <template #default="{ row }">{{ formatDisplayText(row.teamName) || '--' }}</template>
+        </el-table-column>
+        <el-table-column label="指导教师" min-width="120">
+          <template #default="{ row }">{{ formatDisplayText(row.teacherName) || '--' }}</template>
+        </el-table-column>
+        <el-table-column label="成员名单" min-width="220">
+          <template #default="{ row }">{{ formatDisplayText(row.memberSummary) || '--' }}</template>
+        </el-table-column>
         <el-table-column label="审核状态" width="140">
           <template #default="{ row }">
             <el-tag :type="statusType(row.auditStatus)">{{ statusLabel(row.auditStatus) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="latestAuditOpinion" label="审核意见" min-width="220" />
+        <el-table-column label="审核意见" min-width="220">
+          <template #default="{ row }">{{ formatDisplayText(row.latestAuditOpinion) || '--' }}</template>
+        </el-table-column>
         <el-table-column prop="submitTime" label="提交时间" min-width="170" />
       </el-table>
     </el-card>
@@ -209,14 +226,14 @@ onMounted(fetchData)
     >
       <el-form :model="individualForm" label-width="90px">
         <el-form-item label="竞赛名称">
-          <span>{{ selectedCompetition?.title }}</span>
+          <span>{{ formatDisplayText(selectedCompetition?.title) }}</span>
         </el-form-item>
         <el-form-item label="报名说明">
           <el-input
             v-model="individualForm.remark"
             type="textarea"
             :rows="4"
-            placeholder="可填写补充说明，便于演示审核流程。"
+            placeholder="可填写补充说明，便于审核人员了解报名情况。"
           />
         </el-form-item>
       </el-form>

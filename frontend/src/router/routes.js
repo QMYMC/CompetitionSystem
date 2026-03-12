@@ -36,7 +36,7 @@ export const layoutChildrenRoutes = [
       menu: true,
       icon: HomeFilled,
       roles: ['ADMIN', 'TEACHER', 'STUDENT', 'COLLEGE_AUDITOR'],
-      description: '展示系统演示入口、账号身份和阶段 6 核心模块。',
+      description: '展示当前账号信息、角色权限和系统功能概览。',
     },
   },
   {
@@ -140,7 +140,7 @@ export const layoutChildrenRoutes = [
       menu: true,
       icon: Bell,
       roles: ['ADMIN', 'TEACHER', 'STUDENT', 'COLLEGE_AUDITOR'],
-      description: '管理员可发布编辑公告，其他角色可查看已发布公告详情。',
+      description: '管理员可发布和维护公告，其他角色可查看已发布公告。',
     },
   },
   {
@@ -153,7 +153,7 @@ export const layoutChildrenRoutes = [
       menu: true,
       icon: DataAnalysis,
       roles: ['ADMIN', 'COLLEGE_AUDITOR'],
-      description: '展示竞赛、报名、获奖和学院维度统计，并使用 ECharts 渲染图表。',
+      description: '展示竞赛、报名、获奖和学院维度统计，并以图表方式呈现。',
     },
   },
   {
@@ -166,7 +166,7 @@ export const layoutChildrenRoutes = [
       menu: true,
       icon: Key,
       roles: ['ADMIN', 'TEACHER', 'STUDENT', 'COLLEGE_AUDITOR'],
-      description: '展示当前登录用户的基础资料和角色身份。',
+      description: '查看当前登录用户的基础资料和角色身份。',
     },
   },
 ]

@@ -7,6 +7,7 @@ import {
   getStudentAwardOptionsApi,
   updateAwardApi,
 } from '@/api/awards'
+import { formatDisplayText } from '@/utils/display'
 
 const loading = ref(false)
 const submitLoading = ref(false)
@@ -86,9 +87,9 @@ const filteredAwards = computed(() =>
     const keyword = queryForm.keyword.trim()
     const matchesKeyword =
       !keyword ||
-      item.competitionTitle?.includes(keyword) ||
-      item.awardName?.includes(keyword) ||
-      item.teamName?.includes(keyword)
+      formatDisplayText(item.competitionTitle)?.includes(keyword) ||
+      formatDisplayText(item.awardName)?.includes(keyword) ||
+      formatDisplayText(item.teamName)?.includes(keyword)
     const matchesStatus = !queryForm.auditStatus || item.auditStatus === queryForm.auditStatus
     return matchesKeyword && matchesStatus
   }),
@@ -106,11 +107,11 @@ function openEditDialog(row) {
   currentAwardId.value = row.id
   Object.assign(awardForm, {
     registrationId: row.registrationId,
-    awardName: row.awardName,
-    awardLevel: row.awardLevel,
-    awardRank: row.awardRank,
+    awardName: formatDisplayText(row.awardName),
+    awardLevel: formatDisplayText(row.awardLevel),
+    awardRank: formatDisplayText(row.awardRank),
     awardTime: row.awardTime,
-    remark: row.remark || '',
+    remark: formatDisplayText(row.remark) || '',
   })
   dialogVisible.value = true
 }
@@ -181,21 +182,33 @@ onMounted(fetchData)
       />
 
       <el-table v-loading="loading" :data="filteredAwards" border>
-        <el-table-column prop="competitionTitle" label="竞赛名称" min-width="220" />
+        <el-table-column label="竞赛名称" min-width="220">
+          <template #default="{ row }">{{ formatDisplayText(row.competitionTitle) }}</template>
+        </el-table-column>
         <el-table-column prop="registrationType" label="报名类型" width="100">
           <template #default="{ row }">{{ modeLabel(row.registrationType) }}</template>
         </el-table-column>
-        <el-table-column prop="teamName" label="团队名称" min-width="160" />
-        <el-table-column prop="awardName" label="奖项名称" min-width="160" />
-        <el-table-column prop="awardLevel" label="获奖级别" min-width="120" />
-        <el-table-column prop="awardRank" label="获奖等次" min-width="120" />
+        <el-table-column label="团队名称" min-width="160">
+          <template #default="{ row }">{{ formatDisplayText(row.teamName) || '--' }}</template>
+        </el-table-column>
+        <el-table-column label="奖项名称" min-width="160">
+          <template #default="{ row }">{{ formatDisplayText(row.awardName) }}</template>
+        </el-table-column>
+        <el-table-column label="获奖级别" min-width="120">
+          <template #default="{ row }">{{ formatDisplayText(row.awardLevel) }}</template>
+        </el-table-column>
+        <el-table-column label="获奖等次" min-width="120">
+          <template #default="{ row }">{{ formatDisplayText(row.awardRank) }}</template>
+        </el-table-column>
         <el-table-column prop="awardTime" label="获奖时间" min-width="170" />
         <el-table-column label="审核状态" width="140">
           <template #default="{ row }">
             <el-tag :type="statusType(row.auditStatus)">{{ statusLabel(row.auditStatus) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="latestAuditOpinion" label="审核意见" min-width="220" />
+        <el-table-column label="审核意见" min-width="220">
+          <template #default="{ row }">{{ formatDisplayText(row.latestAuditOpinion) || '--' }}</template>
+        </el-table-column>
         <el-table-column label="操作" width="120" fixed="right">
           <template #default="{ row }">
             <el-button v-if="canEdit(row)" link type="primary" @click="openEditDialog(row)">编辑</el-button>
@@ -221,7 +234,7 @@ onMounted(fetchData)
             <el-option
               v-for="item in options"
               :key="item.registrationId"
-              :label="`${item.competitionTitle} / ${modeLabel(item.registrationType)}${item.teamName ? ` / ${item.teamName}` : ''}`"
+              :label="`${formatDisplayText(item.competitionTitle)} / ${modeLabel(item.registrationType)}${item.teamName ? ` / ${formatDisplayText(item.teamName)}` : ''}`"
               :value="item.registrationId"
             />
           </el-select>
@@ -240,12 +253,12 @@ onMounted(fetchData)
             v-model="awardForm.awardTime"
             type="datetime"
             value-format="YYYY-MM-DD HH:mm:ss"
-            placeholder="选择获奖时间"
+            placeholder="请选择获奖时间"
             style="width: 100%"
           />
         </el-form-item>
         <el-form-item label="备注说明">
-          <el-input v-model="awardForm.remark" type="textarea" :rows="4" placeholder="可填写证书编号、补充说明等" />
+          <el-input v-model="awardForm.remark" type="textarea" :rows="4" placeholder="可填写证书编号及补充说明" />
         </el-form-item>
       </el-form>
 

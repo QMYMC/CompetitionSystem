@@ -2,6 +2,7 @@
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import * as echarts from 'echarts'
 import { getStatisticsOverviewApi } from '@/api/statistics'
+import { formatDisplayText } from '@/utils/display'
 
 const loading = ref(false)
 const overview = ref(null)
@@ -40,7 +41,10 @@ function renderCharts() {
       {
         type: 'pie',
         radius: ['42%', '68%'],
-        data: overview.value.registrationTypeStats || [],
+        data: (overview.value.registrationTypeStats || []).map((item) => ({
+          ...item,
+          name: formatDisplayText(item.name),
+        })),
       },
     ],
   })
@@ -52,12 +56,15 @@ function renderCharts() {
       {
         type: 'pie',
         radius: ['42%', '68%'],
-        data: overview.value.awardStatusStats || [],
+        data: (overview.value.awardStatusStats || []).map((item) => ({
+          ...item,
+          name: formatDisplayText(item.name),
+        })),
       },
     ],
   })
 
-  const collegeNames = (overview.value.collegeStats || []).map((item) => item.collegeName)
+  const collegeNames = (overview.value.collegeStats || []).map((item) => formatDisplayText(item.collegeName))
   collegeChart?.setOption({
     tooltip: { trigger: 'axis' },
     legend: { top: 0 },
@@ -166,7 +173,7 @@ onBeforeUnmount(() => {
     <el-card class="panel-card chart-card" shadow="hover">
       <div class="section-header">
         <h3>学院维度统计</h3>
-        <p>按学院汇总报名数量与获奖数量，适合答辩时展示数据看板。</p>
+        <p>按学院汇总报名数量与获奖数量，用于查看学院统计看板。</p>
       </div>
       <div ref="collegeChartRef" class="chart-box" />
     </el-card>
@@ -177,7 +184,9 @@ onBeforeUnmount(() => {
         <p>表格展示报名总数、已通过报名数、获奖数和已通过获奖数。</p>
       </div>
       <el-table v-if="overview" :data="overview.collegeStats" border>
-        <el-table-column prop="collegeName" label="学院名称" min-width="180" />
+        <el-table-column label="学院名称" min-width="180">
+          <template #default="{ row }">{{ formatDisplayText(row.collegeName) }}</template>
+        </el-table-column>
         <el-table-column prop="registrationCount" label="报名总数" min-width="120" />
         <el-table-column prop="approvedRegistrationCount" label="通过报名数" min-width="120" />
         <el-table-column prop="awardCount" label="获奖总数" min-width="120" />

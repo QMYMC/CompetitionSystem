@@ -9,6 +9,7 @@ import {
   getUserPageApi,
   updateUserApi,
 } from '@/api/users'
+import { formatDisplayText, formatOptionList, formatRoleLabel } from '@/utils/display'
 
 const loading = ref(false)
 const submitLoading = ref(false)
@@ -85,8 +86,11 @@ function resetEditForm() {
 
 async function fetchOptions() {
   const data = await getUserOptionsApi()
-  options.roles = data.roles || []
-  options.colleges = data.colleges || []
+  options.roles = formatOptionList((data.roles || []).map((item) => ({
+    ...item,
+    label: formatRoleLabel(item.label),
+  })))
+  options.colleges = formatOptionList(data.colleges || [])
 }
 
 async function fetchUsers() {
@@ -130,7 +134,7 @@ async function openEditDialog(row) {
   Object.assign(editForm, {
     id: detail.id,
     username: detail.username,
-    realName: detail.realName,
+    realName: formatDisplayText(detail.realName),
     email: detail.email,
     phone: detail.phone,
     gender: detail.gender || 'M',
@@ -246,9 +250,15 @@ onMounted(async () => {
 
       <el-table v-loading="loading" :data="pageData.records" border>
         <el-table-column prop="username" label="用户名" min-width="120" />
-        <el-table-column prop="realName" label="姓名" min-width="120" />
-        <el-table-column prop="roleName" label="角色" min-width="140" />
-        <el-table-column prop="collegeName" label="学院" min-width="180" />
+        <el-table-column label="姓名" min-width="120">
+          <template #default="{ row }">{{ formatDisplayText(row.realName) || '--' }}</template>
+        </el-table-column>
+        <el-table-column label="角色" min-width="140">
+          <template #default="{ row }">{{ formatRoleLabel(row.roleCode || row.roleName) }}</template>
+        </el-table-column>
+        <el-table-column label="学院" min-width="180">
+          <template #default="{ row }">{{ formatDisplayText(row.collegeName) || '--' }}</template>
+        </el-table-column>
         <el-table-column prop="gender" label="性别" width="80">
           <template #default="{ row }">{{ formatGender(row.gender) }}</template>
         </el-table-column>
@@ -296,7 +306,7 @@ onMounted(async () => {
           </el-col>
           <el-col :span="12">
             <el-form-item :label="dialogMode === 'create' ? '初始密码' : '重置密码'" prop="password">
-              <el-input v-model="editForm.password" show-password placeholder="编辑时可留空" />
+              <el-input v-model="editForm.password" show-password placeholder="编辑用户时可留空" />
             </el-form-item>
           </el-col>
           <el-col :span="12">

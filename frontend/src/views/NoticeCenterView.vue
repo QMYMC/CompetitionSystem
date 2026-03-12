@@ -9,6 +9,7 @@ import {
   updateNoticeApi,
 } from '@/api/notices'
 import { useUserStore } from '@/stores/user'
+import { formatDisplayText } from '@/utils/display'
 
 const userStore = useUserStore()
 
@@ -103,8 +104,8 @@ async function openEditDialog(row) {
   currentNoticeId.value = row.id
   const detail = await getNoticeDetailApi(row.id)
   Object.assign(noticeForm, {
-    title: detail.title,
-    content: detail.content,
+    title: formatDisplayText(detail.title),
+    content: formatDisplayText(detail.content),
     publishStatus: detail.publishStatus,
     topFlag: detail.topFlag,
   })
@@ -181,8 +182,12 @@ onMounted(fetchPage)
         </el-form>
 
         <el-table v-loading="loading" :data="pageData.records" border>
-          <el-table-column prop="title" label="公告标题" min-width="220" />
-          <el-table-column prop="contentPreview" label="内容预览" min-width="260" show-overflow-tooltip />
+          <el-table-column label="公告标题" min-width="220">
+            <template #default="{ row }">{{ formatDisplayText(row.title) }}</template>
+          </el-table-column>
+          <el-table-column label="内容摘要" min-width="260" show-overflow-tooltip>
+            <template #default="{ row }">{{ formatDisplayText(row.contentPreview) }}</template>
+          </el-table-column>
           <el-table-column label="状态" width="100">
             <template #default="{ row }">
               <el-tag :type="publishStatusType(row.publishStatus)">{{ publishStatusLabel(row.publishStatus) }}</el-tag>
@@ -193,7 +198,9 @@ onMounted(fetchPage)
               <el-tag :type="row.topFlag ? 'warning' : 'info'">{{ row.topFlag ? '是' : '否' }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="publisherName" label="发布人" min-width="120" />
+          <el-table-column label="发布人" min-width="120">
+            <template #default="{ row }">{{ formatDisplayText(row.publisherName) || '系统管理员' }}</template>
+          </el-table-column>
           <el-table-column prop="publishTime" label="发布时间" min-width="170" />
           <el-table-column label="操作" width="180" fixed="right">
             <template #default="{ row }">
@@ -221,7 +228,7 @@ onMounted(fetchPage)
       <el-card class="panel-card notice-detail-card" shadow="hover">
         <div class="section-header">
           <h3>公告详情</h3>
-          <p>点击列表中的“详情”可在右侧查看公告完整内容。</p>
+          <p>点击列表中的“详情”可在右侧查看公告全文。</p>
         </div>
 
         <div v-if="noticeDetail" v-loading="detailLoading">
@@ -230,14 +237,14 @@ onMounted(fetchPage)
               {{ publishStatusLabel(noticeDetail.publishStatus) }}
             </el-tag>
             <el-tag v-if="noticeDetail.topFlag" type="warning">置顶公告</el-tag>
-            <el-tag type="info">{{ noticeDetail.publisherName || '系统管理员' }}</el-tag>
+            <el-tag type="info">{{ formatDisplayText(noticeDetail.publisherName) || '系统管理员' }}</el-tag>
           </div>
-          <h3>{{ noticeDetail.title }}</h3>
+          <h3>{{ formatDisplayText(noticeDetail.title) }}</h3>
           <p class="metric-tip">发布时间：{{ noticeDetail.publishTime || '--' }}</p>
-          <div class="notice-preview">{{ noticeDetail.content }}</div>
+          <div class="notice-preview">{{ formatDisplayText(noticeDetail.content) }}</div>
         </div>
 
-        <el-empty v-else description="请选择一条公告查看详情" />
+        <el-empty v-else description="请选择公告查看详细内容" />
       </el-card>
     </div>
 

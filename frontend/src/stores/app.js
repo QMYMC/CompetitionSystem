@@ -2,6 +2,6 @@ import { defineStore } from 'pinia'
 
 export const useAppStore = defineStore('app', {
   state: () => ({
-    systemName: import.meta.env.VITE_APP_TITLE || '高校学科竞赛管理系统（毕业设计演示版）',
+    systemName: import.meta.env.VITE_APP_TITLE || '高校学科竞赛信息管理系统',
   }),
 })

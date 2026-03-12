@@ -12,6 +12,7 @@ import {
   submitTeamApi,
   updateTeamApi,
 } from '@/api/workflow'
+import { formatDisplayText, formatOptionList } from '@/utils/display'
 
 const route = useRoute()
 
@@ -71,9 +72,9 @@ function currentTeamEditable(team = teamDetail.value) {
 
 async function fetchOptions() {
   const data = await getTeamFormOptionsApi()
-  options.competitions = data.competitions || []
-  options.teachers = data.teachers || []
-  options.students = data.students || []
+  options.competitions = formatOptionList(data.competitions || [])
+  options.teachers = formatOptionList(data.teachers || [])
+  options.students = formatOptionList(data.students || [])
 }
 
 async function fetchTeams() {
@@ -132,10 +133,10 @@ async function openEditDialog(team) {
   Object.assign(teamForm, {
     id: detail.id,
     competitionId: detail.competitionId,
-    teamName: detail.teamName,
+    teamName: formatDisplayText(detail.teamName),
     teacherId: detail.teacherId,
     memberUserIds: [],
-    remark: detail.remark || '',
+    remark: formatDisplayText(detail.remark) || '',
   })
   dialogVisible.value = true
 }
@@ -185,7 +186,7 @@ async function handleRemoveMember(member) {
   if (!teamDetail.value) {
     return
   }
-  await ElMessageBox.confirm(`确认移出成员“${member.realName}”吗？`, '移除确认', { type: 'warning' })
+  await ElMessageBox.confirm(`确认移出成员“${formatDisplayText(member.realName)}”吗？`, '移除确认', { type: 'warning' })
   await removeTeamMemberApi(teamDetail.value.id, member.userId)
   ElMessage.success('团队成员已移除。')
   await fetchTeams()
@@ -230,14 +231,20 @@ onMounted(async () => {
           </div>
 
           <el-table v-loading="loading" :data="teams" border @row-click="(row) => fetchTeamDetail(row.id)">
-            <el-table-column prop="competitionTitle" label="竞赛名称" min-width="220" />
-            <el-table-column prop="teamName" label="团队名称" min-width="160" />
+            <el-table-column label="竞赛名称" min-width="220">
+              <template #default="{ row }">{{ formatDisplayText(row.competitionTitle) }}</template>
+            </el-table-column>
+            <el-table-column label="团队名称" min-width="160">
+              <template #default="{ row }">{{ formatDisplayText(row.teamName) }}</template>
+            </el-table-column>
             <el-table-column label="团队状态" width="140">
               <template #default="{ row }">
                 <el-tag :type="teamStatusType(row.teamStatus)">{{ teamStatusLabel(row.teamStatus) }}</el-tag>
               </template>
             </el-table-column>
-            <el-table-column prop="teacherName" label="指导教师" min-width="120" />
+            <el-table-column label="指导教师" min-width="120">
+              <template #default="{ row }">{{ formatDisplayText(row.teacherName) || '--' }}</template>
+            </el-table-column>
             <el-table-column label="操作" width="220" fixed="right">
               <template #default="{ row }">
                 <el-button link type="primary" @click.stop="fetchTeamDetail(row.id)">详情</el-button>
@@ -275,7 +282,7 @@ onMounted(async () => {
             <div class="detail-grid">
               <div class="profile-item">
                 <span>竞赛名称</span>
-                <strong>{{ teamDetail.competitionTitle }}</strong>
+                <strong>{{ formatDisplayText(teamDetail.competitionTitle) }}</strong>
               </div>
               <div class="profile-item">
                 <span>团队状态</span>
@@ -283,17 +290,17 @@ onMounted(async () => {
               </div>
               <div class="profile-item">
                 <span>指导教师</span>
-                <strong>{{ teamDetail.teacherName || '--' }}</strong>
+                <strong>{{ formatDisplayText(teamDetail.teacherName) || '--' }}</strong>
               </div>
               <div class="profile-item">
                 <span>教师职称</span>
-                <strong>{{ teamDetail.teacherTitle || '--' }}</strong>
+                <strong>{{ formatDisplayText(teamDetail.teacherTitle) || '--' }}</strong>
               </div>
             </div>
 
             <div class="inline-tip">
               <span>最近审核意见：</span>
-              <strong>{{ teamDetail.latestAuditOpinion || '暂无审核意见' }}</strong>
+              <strong>{{ formatDisplayText(teamDetail.latestAuditOpinion) || '暂无审核意见' }}</strong>
             </div>
 
             <div class="section-header section-header--compact">
@@ -310,9 +317,13 @@ onMounted(async () => {
             </div>
 
             <el-table :data="teamDetail.members" border size="small">
-              <el-table-column prop="realName" label="姓名" min-width="100" />
-              <el-table-column prop="username" label="账号" min-width="120" />
-              <el-table-column prop="collegeName" label="学院" min-width="150" />
+              <el-table-column label="姓名" min-width="100">
+                <template #default="{ row }">{{ formatDisplayText(row.realName) }}</template>
+              </el-table-column>
+              <el-table-column prop="username" label="用户名" min-width="120" />
+              <el-table-column label="学院" min-width="150">
+                <template #default="{ row }">{{ formatDisplayText(row.collegeName) }}</template>
+              </el-table-column>
               <el-table-column prop="memberRole" label="角色" width="90">
                 <template #default="{ row }">
                   {{ row.memberRole === 'LEADER' ? '队长' : '成员' }}
@@ -349,7 +360,7 @@ onMounted(async () => {
           <el-select
             v-model="teamForm.competitionId"
             :disabled="dialogMode === 'edit'"
-            placeholder="请选择团队赛竞赛"
+            placeholder="请选择竞赛项目"
             style="width: 100%"
           >
             <el-option
@@ -385,7 +396,7 @@ onMounted(async () => {
             multiple
             collapse-tags
             collapse-tags-tooltip
-            placeholder="可先选择初始成员"
+            placeholder="可选择初始成员"
             style="width: 100%"
           >
             <el-option
@@ -439,7 +450,7 @@ onMounted(async () => {
             v-model="submitForm.remark"
             type="textarea"
             :rows="4"
-            placeholder="可补充团队介绍或申请说明。"
+            placeholder="可补充团队简介或申请说明。"
           />
         </el-form-item>
       </el-form>

@@ -6,6 +6,7 @@ import {
   getRegistrationReviewPageApi,
   rejectRegistrationApi,
 } from '@/api/workflow'
+import { formatDisplayText } from '@/utils/display'
 
 const loading = ref(false)
 const submitLoading = ref(false)
@@ -155,20 +156,32 @@ onMounted(fetchPage)
       </el-form>
 
       <el-table v-loading="loading" :data="pageData.records" border>
-        <el-table-column prop="competitionTitle" label="竞赛名称" min-width="220" />
+        <el-table-column label="竞赛名称" min-width="220">
+          <template #default="{ row }">{{ formatDisplayText(row.competitionTitle) }}</template>
+        </el-table-column>
         <el-table-column prop="registrationType" label="报名类型" width="100">
           <template #default="{ row }">{{ modeLabel(row.registrationType) }}</template>
         </el-table-column>
-        <el-table-column prop="applicantName" label="申请人 / 队长" min-width="120" />
-        <el-table-column prop="teamName" label="团队名称" min-width="160" />
-        <el-table-column prop="teacherName" label="指导教师" min-width="120" />
-        <el-table-column prop="memberSummary" label="成员名单" min-width="220" />
+        <el-table-column label="申请人（队长）" min-width="120">
+          <template #default="{ row }">{{ formatDisplayText(row.applicantName) }}</template>
+        </el-table-column>
+        <el-table-column label="团队名称" min-width="160">
+          <template #default="{ row }">{{ formatDisplayText(row.teamName) || '--' }}</template>
+        </el-table-column>
+        <el-table-column label="指导教师" min-width="120">
+          <template #default="{ row }">{{ formatDisplayText(row.teacherName) || '--' }}</template>
+        </el-table-column>
+        <el-table-column label="成员名单" min-width="220">
+          <template #default="{ row }">{{ formatDisplayText(row.memberSummary) || '--' }}</template>
+        </el-table-column>
         <el-table-column label="审核状态" width="140">
           <template #default="{ row }">
             <el-tag :type="statusType(row.auditStatus)">{{ statusLabel(row.auditStatus) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="latestAuditOpinion" label="审核意见" min-width="220" />
+        <el-table-column label="审核意见" min-width="220">
+          <template #default="{ row }">{{ formatDisplayText(row.latestAuditOpinion) || '--' }}</template>
+        </el-table-column>
         <el-table-column prop="submitTime" label="提交时间" min-width="170" />
         <el-table-column label="操作" width="180" fixed="right">
           <template #default="{ row }">
@@ -213,7 +226,7 @@ onMounted(fetchPage)
     >
       <el-form :model="reviewForm" label-width="90px">
         <el-form-item label="竞赛名称">
-          <span>{{ currentRow?.competitionTitle }}</span>
+          <span>{{ formatDisplayText(currentRow?.competitionTitle) }}</span>
         </el-form-item>
         <el-form-item label="审核意见">
           <el-input

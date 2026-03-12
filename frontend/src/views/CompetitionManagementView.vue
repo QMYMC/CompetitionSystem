@@ -9,6 +9,7 @@ import {
   getCompetitionPageApi,
   updateCompetitionApi,
 } from '@/api/competitions'
+import { formatDisplayText, formatOptionList } from '@/utils/display'
 
 const loading = ref(false)
 const submitLoading = ref(false)
@@ -80,7 +81,7 @@ function resetEditForm() {
 
 async function fetchOptions() {
   const data = await getCompetitionOptionsApi()
-  options.categories = data.categories || []
+  options.categories = formatOptionList(data.categories || [])
   options.statuses = data.statuses || []
   options.teamModes = data.teamModes || []
 }
@@ -122,7 +123,13 @@ async function openEditDialog(row) {
   dialogMode.value = 'edit'
   resetEditForm()
   const detail = await getCompetitionDetailApi(row.id)
-  Object.assign(editForm, detail)
+  Object.assign(editForm, {
+    ...detail,
+    title: formatDisplayText(detail.title),
+    levelName: formatDisplayText(detail.levelName),
+    organizer: formatDisplayText(detail.organizer),
+    description: formatDisplayText(detail.description),
+  })
   dialogVisible.value = true
 }
 
@@ -225,11 +232,19 @@ onMounted(async () => {
         </el-form-item>
       </el-form>
 
-      <el-table v-loading="loading" :data="pageData.records" border>
-        <el-table-column prop="title" label="竞赛名称" min-width="220" />
-        <el-table-column prop="categoryName" label="分类" min-width="150" />
-        <el-table-column prop="levelName" label="级别" min-width="120" />
-        <el-table-column prop="organizer" label="主办单位" min-width="180" />
+        <el-table v-loading="loading" :data="pageData.records" border>
+        <el-table-column label="竞赛名称" min-width="220">
+          <template #default="{ row }">{{ formatDisplayText(row.title) }}</template>
+        </el-table-column>
+        <el-table-column label="竞赛分类" min-width="150">
+          <template #default="{ row }">{{ formatDisplayText(row.categoryName) }}</template>
+        </el-table-column>
+        <el-table-column label="竞赛级别" min-width="120">
+          <template #default="{ row }">{{ formatDisplayText(row.levelName) }}</template>
+        </el-table-column>
+        <el-table-column label="主办单位" min-width="180">
+          <template #default="{ row }">{{ formatDisplayText(row.organizer) }}</template>
+        </el-table-column>
         <el-table-column prop="teamMode" label="参赛方式" width="100">
           <template #default="{ row }">{{ formatTeamMode(row.teamMode) }}</template>
         </el-table-column>
@@ -310,7 +325,7 @@ onMounted(async () => {
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="最大人数">
+            <el-form-item label="团队人数上限">
               <el-input-number v-model="editForm.maxTeamSize" :min="1" style="width: 100%" />
             </el-form-item>
           </el-col>
@@ -320,7 +335,7 @@ onMounted(async () => {
                 v-model="editForm.registrationStart"
                 type="datetime"
                 value-format="YYYY-MM-DD HH:mm:ss"
-                placeholder="选择时间"
+                placeholder="请选择时间"
                 style="width: 100%"
               />
             </el-form-item>
@@ -331,29 +346,29 @@ onMounted(async () => {
                 v-model="editForm.registrationEnd"
                 type="datetime"
                 value-format="YYYY-MM-DD HH:mm:ss"
-                placeholder="选择时间"
+                placeholder="请选择时间"
                 style="width: 100%"
               />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="比赛开始">
+            <el-form-item label="竞赛开始时间">
               <el-date-picker
                 v-model="editForm.competitionStart"
                 type="datetime"
                 value-format="YYYY-MM-DD HH:mm:ss"
-                placeholder="选择时间"
+                placeholder="请选择时间"
                 style="width: 100%"
               />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="比赛结束">
+            <el-form-item label="竞赛结束时间">
               <el-date-picker
                 v-model="editForm.competitionEnd"
                 type="datetime"
                 value-format="YYYY-MM-DD HH:mm:ss"
-                placeholder="选择时间"
+                placeholder="请选择时间"
                 style="width: 100%"
               />
             </el-form-item>
