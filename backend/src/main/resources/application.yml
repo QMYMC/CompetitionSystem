@@ -1,0 +1,14 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: competition-system-backend
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

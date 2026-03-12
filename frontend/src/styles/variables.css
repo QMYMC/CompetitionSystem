@@ -1,0 +1,12 @@
+:root {
+  --cs-color-bg: #f3f6f4;
+  --cs-color-surface: #ffffff;
+  --cs-color-primary: #1f6f5f;
+  --cs-color-primary-soft: #e3f1ed;
+  --cs-color-text: #1e2a28;
+  --cs-color-muted: #64706d;
+  --cs-color-sidebar: linear-gradient(180deg, #183c3a 0%, #102826 100%);
+  --cs-shadow-card: 0 16px 40px rgba(27, 53, 50, 0.08);
+  --cs-radius-lg: 24px;
+  --cs-radius-md: 18px;
+}
